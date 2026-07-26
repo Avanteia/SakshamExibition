@@ -6,7 +6,7 @@ const WA_NUMBER = "917083677595"; // primary WhatsApp contact (country code + nu
 
 // Google Apps Script Web App URL bound to the registrations Google Sheet.
 // See google-apps-script.gs for the script to deploy and paste the /exec URL here.
-const SHEETS_ENDPOINT = "PASTE_YOUR_GOOGLE_APPS_SCRIPT_WEB_APP_URL_HERE";
+const SHEETS_ENDPOINT = "https://script.google.com/macros/s/AKfycbzsoJLUPXobxByUPuJusWalyHfuDUHbalA9zDWhDZ-KBzqu1ieSNiXI_cNGtbEEZvsc/exec";
 
 function waLink(message){
   return `https://wa.me/${WA_NUMBER}?text=${encodeURIComponent(message)}`;
