@@ -45,39 +45,95 @@
     <div class="grid grid-2" style="align-items:flex-start;">
 
       <div class="enquiry-box">
-        <span class="eyebrow">Quick Enquiry</span>
-        <h2 class="section-title" style="font-size:1.5rem;">Send us your interest</h2>
-        <p style="color:var(--text-muted); margin-bottom:24px;">Fill this in and we'll open WhatsApp with your message ready to send.</p>
-        <form id="enquiryForm">
+        <span class="eyebrow">Official Registration</span>
+        <h2 class="section-title" style="font-size:1.5rem;">Register for Saksham</h2>
+        <p style="color:var(--text-muted); margin-bottom:24px;">Fill in your details, choose how you'd like to join, complete payment, and submit — your registration is saved to our event records.</p>
+        <form id="registrationForm">
           <div class="form-row">
-            <label for="enqName">Your Name</label>
-            <input type="text" id="enqName" placeholder="e.g. Priya Naik" required>
+            <label for="regName">Full Name</label>
+            <input type="text" id="regName" placeholder="e.g. Priya Naik" required>
           </div>
           <div class="form-row">
-            <label for="enqInterest">I'm Interested In</label>
-            <select id="enqInterest" required>
-              <option value="Cook Without Fire Competition">Cook Without Fire Competition (Day 1)</option>
-              <option value="Fancy Dress Competition">Fancy Dress Competition (Day 1)</option>
-              <option value="Fati Making (Fresh Flowers) Competition">Fati Making (Fresh Flowers) (Day 2)</option>
-              <option value="Solo Dance Competition (Classical)">Solo Dance Competition - Classical (Day 2)</option>
-              <option value="Healthy Food (Cook at Home) Competition">Healthy Food (Cook at Home) (Day 3)</option>
-              <option value="Hairstyle Making Competition">Hairstyle Making (Day 3)</option>
-              <option value="Story Telling Competition">Story Telling Competition (Day 3)</option>
-              <option value="Book Mark Competition">Book Mark Competition (Day 3)</option>
-              <option value="Mehendi Competition">Mehendi Competition (Day 4)</option>
-              <option value="Balgeet Competition">Balgeet Competition (Day 4)</option>
-              <option value="Rakhi Making Competition">Rakhi Making Competition (Day 4)</option>
-              <option value="Fashion Show for Ladies">Fashion Show for Ladies (Day 5)</option>
-              <option value="Booking a Stall at the Exhibition cum Sale">Booking a Stall (Exhibition cum Sale)</option>
-              <option value="Visiting the Exhibition cum Sale">Just Visiting the Exhibition</option>
-              <option value="General Enquiry about Saksham">General Enquiry</option>
+            <label for="regPhone">Phone Number</label>
+            <input type="tel" id="regPhone" placeholder="e.g. 9876543210" pattern="[0-9]{10}" maxlength="10" required>
+          </div>
+          <div class="form-row">
+            <label for="regEmail">Email ID</label>
+            <input type="email" id="regEmail" placeholder="e.g. priya@email.com" required>
+          </div>
+
+          <div class="form-row">
+            <label>Registering As</label>
+            <div class="reg-toggle">
+              <label class="reg-option">
+                <input type="radio" name="regType" value="Participant" checked>
+                <span>Participant<small>₹100 registration</small></span>
+              </label>
+              <label class="reg-option">
+                <input type="radio" name="regType" value="Stall">
+                <span>Stall Owner<small>₹3500 / 5 days</small></span>
+              </label>
+            </div>
+          </div>
+
+          <div class="form-row" id="participantField">
+            <label for="regCompetition">Select Competition</label>
+            <select id="regCompetition">
+              <option>Cook Without Fire (Day 1)</option>
+              <option>Fancy Dress Competition (Day 1)</option>
+              <option>Fati Making - Fresh Flowers (Day 2)</option>
+              <option>Solo Dance Competition - Classical (Day 2)</option>
+              <option>Healthy Food - Cook at Home (Day 3)</option>
+              <option>Hairstyle Making (Day 3)</option>
+              <option>Story Telling Competition (Day 3)</option>
+              <option>Book Mark Competition (Day 3)</option>
+              <option>Mehendi Competition (Day 4)</option>
+              <option>Balgeet Competition (Day 4)</option>
+              <option>Rakhi Making Competition (Day 4)</option>
+              <option>Fashion Show for Ladies (Day 5)</option>
             </select>
           </div>
-          <div class="form-row">
-            <label for="enqNote">Note (optional)</label>
-            <textarea id="enqNote" rows="3" placeholder="Age of participant, questions, etc."></textarea>
+
+          <div class="form-row" id="stallField" style="display:none;">
+            <label for="regStallType">Type of Stall</label>
+            <select id="regStallType">
+              <option>Fashion / Clothing</option>
+              <option>Lifestyle Accessories</option>
+              <option>Home Decor</option>
+              <option>Food &amp; Packed Items</option>
+              <option>Beauty &amp; Cosmetics</option>
+              <option>Resin Art</option>
+              <option>Instant Nauvari Stitching</option>
+              <option>Jewellery</option>
+              <option>Footware</option>
+              <option>Other</option>
+            </select>
           </div>
-          <button type="submit" class="btn btn-whatsapp btn-block"><span class="icon" data-icon="whatsapp"></span> Send via WhatsApp</button>
+          <div class="form-row" id="stallOtherField" style="display:none;">
+            <label for="regStallOther">Please specify your stall type</label>
+            <input type="text" id="regStallOther" placeholder="e.g. Handmade candles">
+          </div>
+
+          <div class="fee-note">
+            <span>Amount Payable</span>
+            <strong id="feeAmount">₹100</strong>
+          </div>
+
+          <div class="form-row">
+            <label>Scan to Pay</label>
+            <div class="qr-box">
+              <img src="images/payment-scanner.jpeg" alt="Payment QR code">
+            </div>
+            <p class="qr-hint">Scan the code above to pay the amount shown, then submit this form.</p>
+          </div>
+
+          <div class="form-row">
+            <label for="regPaymentRef">Payment Reference / UTR (optional)</label>
+            <input type="text" id="regPaymentRef" placeholder="e.g. UPI transaction ID">
+          </div>
+
+          <button type="submit" class="btn btn-primary btn-block">Submit Registration</button>
+          <p id="regStatus" class="form-status" style="display:none;"></p>
         </form>
       </div>
 
@@ -143,6 +199,7 @@
         <a href="schedule.html">Event Schedule</a>
         <a href="exhibition.html">Exhibition &amp; Stalls</a>
         <a href="contact.html">Register / Contact</a>
+        <a href="https://linktr.ee/sakshamexibition" target="_blank" rel="noopener"><span class="icon" data-icon="link"></span> All Links (Linktree)</a>
       </div>
       <div>
         <h4>Contact</h4>

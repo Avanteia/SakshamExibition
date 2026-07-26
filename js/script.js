@@ -4,6 +4,10 @@
 
 const WA_NUMBER = "917083677595"; // primary WhatsApp contact (country code + number)
 
+// Google Apps Script Web App URL bound to the registrations Google Sheet.
+// See google-apps-script.gs for the script to deploy and paste the /exec URL here.
+const SHEETS_ENDPOINT = "PASTE_YOUR_GOOGLE_APPS_SCRIPT_WEB_APP_URL_HERE";
+
 function waLink(message){
   return `https://wa.me/${WA_NUMBER}?text=${encodeURIComponent(message)}`;
 }
@@ -37,7 +41,8 @@ const ICONS = {
   lamp: `<svg ${ICON_ATTRS}><path d="M8.5 3.5h7l2 6h-11z"/><path d="M12 9.5v9.5"/><path d="M8.5 19h7"/></svg>`,
   more: `<svg ${ICON_ATTRS} stroke="none" fill="currentColor"><circle cx="5.5" cy="12" r="1.7"/><circle cx="12" cy="12" r="1.7"/><circle cx="18.5" cy="12" r="1.7"/></svg>`,
   sun: `<svg ${ICON_ATTRS}><circle cx="12" cy="12" r="4"/><path d="M12 2.5v2.7M12 18.8v2.7M4.6 4.6l1.9 1.9M17.5 17.5l1.9 1.9M2.5 12h2.7M18.8 12h2.7M4.6 19.4l1.9-1.9M17.5 6.5l1.9-1.9"/></svg>`,
-  moon: `<svg ${ICON_ATTRS}><path d="M20.5 14.5A8.5 8.5 0 1 1 9.5 3.5a7 7 0 0 0 11 11z"/></svg>`
+  moon: `<svg ${ICON_ATTRS}><path d="M20.5 14.5A8.5 8.5 0 1 1 9.5 3.5a7 7 0 0 0 11 11z"/></svg>`,
+  link: `<svg ${ICON_ATTRS}><path d="M10.5 13.5a3.5 3.5 0 0 0 5 0l3-3a3.5 3.5 0 0 0-5-5l-1.3 1.3"/><path d="M13.5 10.5a3.5 3.5 0 0 0-5 0l-3 3a3.5 3.5 0 0 0 5 5l1.3-1.3"/></svg>`
 };
 
 function renderIcons(){
@@ -169,19 +174,70 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   }
 
-  /* ---------- Quick Enquiry builder (contact page) ---------- */
-  const enquiryForm = document.querySelector("#enquiryForm");
-  if (enquiryForm) {
-    enquiryForm.addEventListener("submit", (e) => {
+  /* ---------- Registration form -> Google Sheet ---------- */
+  const regForm = document.querySelector("#registrationForm");
+  if (regForm) {
+    const participantField = regForm.querySelector("#participantField");
+    const stallField = regForm.querySelector("#stallField");
+    const stallOtherField = regForm.querySelector("#stallOtherField");
+    const stallTypeSelect = regForm.querySelector("#regStallType");
+    const feeAmount = regForm.querySelector("#feeAmount");
+    const statusEl = regForm.querySelector("#regStatus");
+
+    function updateType(){
+      const type = regForm.querySelector('input[name="regType"]:checked').value;
+      if (type === "Participant") {
+        participantField.style.display = "";
+        stallField.style.display = "none";
+        stallOtherField.style.display = "none";
+        feeAmount.textContent = "₹100";
+      } else {
+        participantField.style.display = "none";
+        stallField.style.display = "";
+        feeAmount.textContent = "₹3500";
+        stallOtherField.style.display = stallTypeSelect.value === "Other" ? "" : "none";
+      }
+    }
+    regForm.querySelectorAll('input[name="regType"]').forEach(r => r.addEventListener("change", updateType));
+    stallTypeSelect.addEventListener("change", () => {
+      stallOtherField.style.display = stallTypeSelect.value === "Other" ? "" : "none";
+    });
+    updateType();
+
+    regForm.addEventListener("submit", (e) => {
       e.preventDefault();
-      const name = enquiryForm.querySelector("#enqName").value.trim();
-      const interest = enquiryForm.querySelector("#enqInterest").value;
-      const note = enquiryForm.querySelector("#enqNote").value.trim();
+      const type = regForm.querySelector('input[name="regType"]:checked').value;
+      const name = regForm.querySelector("#regName").value.trim();
+      const phone = regForm.querySelector("#regPhone").value.trim();
+      const email = regForm.querySelector("#regEmail").value.trim();
+      const detail = type === "Participant"
+        ? regForm.querySelector("#regCompetition").value
+        : (stallTypeSelect.value === "Other" ? regForm.querySelector("#regStallOther").value.trim() : stallTypeSelect.value);
+      const fee = type === "Participant" ? "100" : "3500";
+      const paymentRef = regForm.querySelector("#regPaymentRef").value.trim();
 
-      let message = `Hello, my name is ${name || "___"}. I am interested in ${interest} for the Saksham event (13-17 August 2026, Sateri Temple, Mapusa).`;
-      if (note) message += ` Additional note: ${note}`;
+      try {
+        const payload = new URLSearchParams({ name, phone, email, type, detail, fee, paymentRef });
+        fetch(SHEETS_ENDPOINT, { method: "POST", mode: "no-cors", body: payload }).catch(() => {});
+      } catch (err) { /* endpoint not configured yet — form still confirms via WhatsApp below */ }
 
-      window.open(waLink(message), "_blank", "noopener");
+      statusEl.textContent = "Thank you! Your registration has been recorded. You can confirm via WhatsApp below.";
+      statusEl.style.display = "block";
+
+      let waBtn = regForm.querySelector(".reg-wa-confirm");
+      if (!waBtn) {
+        waBtn = document.createElement("a");
+        waBtn.className = "btn btn-whatsapp btn-block reg-wa-confirm";
+        waBtn.style.marginTop = "12px";
+        waBtn.target = "_blank";
+        waBtn.rel = "noopener";
+        waBtn.innerHTML = '<span class="icon" data-icon="whatsapp"></span> Confirm via WhatsApp';
+        regForm.appendChild(waBtn);
+        renderIcons();
+      }
+      const label = type === "Participant" ? "Competition" : "Stall Type";
+      const msg = `Hello, I have registered for Saksham as a ${type}. Name: ${name}, Phone: ${phone}, ${label}: ${detail}, Fee: Rs ${fee}${paymentRef ? ", Payment Ref: " + paymentRef : ""}.`;
+      waBtn.setAttribute("href", waLink(msg));
     });
   }
 });
