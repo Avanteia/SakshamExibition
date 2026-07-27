@@ -355,6 +355,7 @@ section{ padding:70px 0; }
 }
 .qr-box img{ width:100%; border-radius:8px; display:block; }
 .qr-hint{ font-size:.82rem; color:var(--text-muted); margin-top:10px; text-align:center; }
+.qr-upi-btn{ display:flex; width:max-content; margin:6px auto 0; }
 
 /* ---------- Form status message ---------- */
 .form-status{
