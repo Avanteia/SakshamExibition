@@ -38,7 +38,8 @@ const ICONS = {
   more: `<svg ${ICON_ATTRS} stroke="none" fill="currentColor"><circle cx="5.5" cy="12" r="1.7"/><circle cx="12" cy="12" r="1.7"/><circle cx="18.5" cy="12" r="1.7"/></svg>`,
   sun: `<svg ${ICON_ATTRS}><circle cx="12" cy="12" r="4"/><path d="M12 2.5v2.7M12 18.8v2.7M4.6 4.6l1.9 1.9M17.5 17.5l1.9 1.9M2.5 12h2.7M18.8 12h2.7M4.6 19.4l1.9-1.9M17.5 6.5l1.9-1.9"/></svg>`,
   moon: `<svg ${ICON_ATTRS}><path d="M20.5 14.5A8.5 8.5 0 1 1 9.5 3.5a7 7 0 0 0 11 11z"/></svg>`,
-  link: `<svg ${ICON_ATTRS}><path d="M10.5 13.5a3.5 3.5 0 0 0 5 0l3-3a3.5 3.5 0 0 0-5-5l-1.3 1.3"/><path d="M13.5 10.5a3.5 3.5 0 0 0-5 0l-3 3a3.5 3.5 0 0 0 5 5l1.3-1.3"/></svg>`
+  link: `<svg ${ICON_ATTRS}><path d="M10.5 13.5a3.5 3.5 0 0 0 5 0l3-3a3.5 3.5 0 0 0-5-5l-1.3 1.3"/><path d="M13.5 10.5a3.5 3.5 0 0 0-5 0l-3 3a3.5 3.5 0 0 0 5 5l1.3-1.3"/></svg>`,
+  copy: `<svg ${ICON_ATTRS}><rect x="8.5" y="8.5" width="12" height="12" rx="2.5"/><path d="M15.5 8.5V6a2 2 0 0 0-2-2H6a2 2 0 0 0-2 2v9.5a2 2 0 0 0 2 2h2.5"/></svg>`
 };
 
 function renderIcons(){
@@ -250,6 +251,36 @@ document.addEventListener("DOMContentLoaded", () => {
       waBtn.setAttribute("href", waLink(msg));
     });
   }
+
+  /* ---------- Copy-to-clipboard buttons ---------- */
+  function fallbackCopy(text, done) {
+    const temp = document.createElement("textarea");
+    temp.value = text;
+    temp.style.position = "fixed";
+    temp.style.opacity = "0";
+    document.body.appendChild(temp);
+    temp.focus();
+    temp.select();
+    try { document.execCommand("copy"); } catch (err) { /* clipboard unavailable */ }
+    document.body.removeChild(temp);
+    done();
+  }
+  document.querySelectorAll("[data-copy]").forEach(el => {
+    el.addEventListener("click", () => {
+      const text = el.getAttribute("data-copy");
+      const label = el.querySelector(".copy-text") || el;
+      const original = label.textContent;
+      const done = () => {
+        label.textContent = "Copied!";
+        setTimeout(() => { label.textContent = original; }, 1800);
+      };
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(text).then(done).catch(() => fallbackCopy(text, done));
+      } else {
+        fallbackCopy(text, done);
+      }
+    });
+  });
 
   /* ---------- Cookie consent banner ---------- */
   if (!document.cookie.includes("sakshamCookieConsent=true")) {
