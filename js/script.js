@@ -4,10 +4,6 @@
 
 const WA_NUMBER = "917083677595"; // primary WhatsApp contact (country code + number)
 
-// Google Apps Script Web App URL bound to the registrations Google Sheet.
-// See google-apps-script.gs for the script to deploy and paste the /exec URL here.
-const SHEETS_ENDPOINT = "https://script.google.com/macros/s/AKfycbzsoJLUPXobxByUPuJusWalyHfuDUHbalA9zDWhDZ-KBzqu1ieSNiXI_cNGtbEEZvsc/exec";
-
 function waLink(message){
   return `https://wa.me/${WA_NUMBER}?text=${encodeURIComponent(message)}`;
 }
@@ -174,7 +170,7 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   }
 
-  /* ---------- Registration form -> Google Sheet ---------- */
+  /* ---------- Registration form -> Firebase ---------- */
   const regForm = document.querySelector("#registrationForm");
   if (regForm) {
     const participantField = regForm.querySelector("#participantField");
@@ -183,6 +179,7 @@ document.addEventListener("DOMContentLoaded", () => {
     const stallTypeSelect = regForm.querySelector("#regStallType");
     const feeAmount = regForm.querySelector("#feeAmount");
     const statusEl = regForm.querySelector("#regStatus");
+    const submitBtn = regForm.querySelector('button[type="submit"]');
 
     function updateType(){
       const type = regForm.querySelector('input[name="regType"]:checked').value;
@@ -204,7 +201,7 @@ document.addEventListener("DOMContentLoaded", () => {
     });
     updateType();
 
-    regForm.addEventListener("submit", (e) => {
+    regForm.addEventListener("submit", async (e) => {
       e.preventDefault();
       const type = regForm.querySelector('input[name="regType"]:checked').value;
       const name = regForm.querySelector("#regName").value.trim();
@@ -216,12 +213,25 @@ document.addEventListener("DOMContentLoaded", () => {
       const fee = type === "Participant" ? "100" : "3500";
       const paymentRef = regForm.querySelector("#regPaymentRef").value.trim();
 
-      try {
-        const payload = new URLSearchParams({ name, phone, email, type, detail, fee, paymentRef });
-        fetch(SHEETS_ENDPOINT, { method: "POST", mode: "no-cors", body: payload }).catch(() => {});
-      } catch (err) { /* endpoint not configured yet — form still confirms via WhatsApp below */ }
+      submitBtn.disabled = true;
+      submitBtn.textContent = "Submitting...";
 
-      statusEl.textContent = "Thank you! Your registration has been recorded. You can confirm via WhatsApp below.";
+      let saved = false;
+      try {
+        if (window.saveRegistrationToFirebase) {
+          await window.saveRegistrationToFirebase({ name, phone, email, type, detail, fee, paymentRef });
+          saved = true;
+        }
+      } catch (err) {
+        saved = false;
+      }
+
+      submitBtn.disabled = false;
+      submitBtn.textContent = "Submit Registration";
+
+      statusEl.textContent = saved
+        ? "Thank you! Your registration has been recorded. You can confirm via WhatsApp below."
+        : "We couldn't save your registration automatically, but you can still confirm via WhatsApp below.";
       statusEl.style.display = "block";
 
       let waBtn = regForm.querySelector(".reg-wa-confirm");
@@ -238,6 +248,21 @@ document.addEventListener("DOMContentLoaded", () => {
       const label = type === "Participant" ? "Competition" : "Stall Type";
       const msg = `Hello, I have registered for Saksham as a ${type}. Name: ${name}, Phone: ${phone}, ${label}: ${detail}, Fee: Rs ${fee}${paymentRef ? ", Payment Ref: " + paymentRef : ""}.`;
       waBtn.setAttribute("href", waLink(msg));
+    });
+  }
+
+  /* ---------- Cookie consent banner ---------- */
+  if (!document.cookie.includes("sakshamCookieConsent=true")) {
+    const banner = document.createElement("div");
+    banner.className = "cookie-banner";
+    banner.innerHTML = `
+      <p>This website uses cookies to remember your preferences and improve your experience.</p>
+      <button class="btn btn-primary btn-sm" id="cookieAccept">Accept</button>
+    `;
+    document.body.appendChild(banner);
+    document.querySelector("#cookieAccept").addEventListener("click", () => {
+      document.cookie = "sakshamCookieConsent=true; max-age=" + (60 * 60 * 24 * 365) + "; path=/";
+      banner.remove();
     });
   }
 });

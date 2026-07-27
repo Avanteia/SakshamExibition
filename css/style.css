@@ -401,6 +401,15 @@ section{ padding:70px 0; }
 }
 .back-top.show{ opacity:1; pointer-events:auto; }
 
+/* ---------- Cookie consent ---------- */
+.cookie-banner{
+  position:fixed; left:16px; right:16px; bottom:16px; z-index:1300;
+  background:#fff; border:1px solid #ffe3ee; border-radius:var(--radius-sm);
+  box-shadow:var(--shadow-strong); padding:16px 20px; display:flex; align-items:center;
+  justify-content:space-between; gap:16px; flex-wrap:wrap; max-width:640px; margin:0 auto;
+}
+.cookie-banner p{ margin:0; font-size:.85rem; color:var(--text-muted); flex:1 1 220px; }
+
 /* ---------- Reveal animation ---------- */
 .reveal{ opacity:0; transform:translateY(24px); transition:opacity .6s ease, transform .6s ease; }
 .reveal.in{ opacity:1; transform:none; }

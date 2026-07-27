@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Admin | Saksham</title>
+<meta name="robots" content="noindex, nofollow">
+<link rel="icon" href="images/logo.jpg">
+<link rel="stylesheet" href="css/style.css">
+<link rel="stylesheet" href="css/admin.css">
+</head>
+<body>
+
+<!-- Login screen -->
+<div id="loginWrap" class="admin-login-wrap">
+  <div class="admin-login-card">
+    <img src="images/logo.jpg" alt="Saksham logo">
+    <h1>Saksham Admin</h1>
+    <p>Sign in to view and manage registrations.</p>
+    <p id="loginError" class="admin-error"></p>
+    <form id="loginForm">
+      <div class="form-row">
+        <label for="adminUser">Username</label>
+        <input type="text" id="adminUser" placeholder="Username" autocomplete="username" required>
+      </div>
+      <div class="form-row">
+        <label for="adminPass">Password</label>
+        <input type="password" id="adminPass" placeholder="Password" autocomplete="current-password" required>
+      </div>
+      <button type="submit" class="btn btn-primary btn-block">Login</button>
+    </form>
+  </div>
+</div>
+
+<!-- Dashboard -->
+<div id="dashboard" class="admin-dashboard">
+  <div class="admin-topbar">
+    <div class="brand">
+      <img src="images/logo.jpg" alt="Saksham logo">
+      <span class="brand-text"><strong>सक्षम</strong><span>Admin Dashboard</span></span>
+    </div>
+    <button id="logoutBtn" class="btn btn-outline btn-sm">Logout</button>
+  </div>
+
+  <div class="admin-stats">
+    <div class="admin-stat-card"><strong id="statTotal">0</strong><span>Total Registrations</span></div>
+    <div class="admin-stat-card"><strong id="statParticipants">0</strong><span>Participants</span></div>
+    <div class="admin-stat-card"><strong id="statStalls">0</strong><span>Stall Owners</span></div>
+    <div class="admin-stat-card"><strong id="statAmount">₹0</strong><span>Amount Collected</span></div>
+  </div>
+
+  <div class="admin-toolbar">
+    <h2>All Registrations</h2>
+    <div class="actions">
+      <button id="refreshBtn" class="btn btn-outline btn-sm">Refresh</button>
+      <button id="exportBtn" class="btn btn-primary btn-sm">Export to Excel</button>
+    </div>
+  </div>
+
+  <div class="admin-table-wrap">
+    <table class="admin-table">
+      <thead>
+        <tr>
+          <th>Date</th>
+          <th>Name</th>
+          <th>Phone</th>
+          <th>Email</th>
+          <th>Type</th>
+          <th>Competition / Stall</th>
+          <th>Fee</th>
+          <th>Payment Ref</th>
+        </tr>
+      </thead>
+      <tbody id="regTableBody"></tbody>
+    </table>
+    <p id="emptyState" class="admin-empty">No registrations yet.</p>
+  </div>
+</div>
+
+<script src="https://cdn.sheetjs.com/xlsx-latest/package/dist/xlsx.full.min.js"></script>
+<script type="module" src="js/firebase-app.js"></script>
+<script src="js/admin.js"></script>
+</body>
+</html>
