@@ -196,7 +196,31 @@ document.addEventListener("DOMContentLoaded", () => {
   const stallForm = document.querySelector("#stallForm");
   if (stallForm) {
     const HALL_FEES = { AC: 5500, NonAC: 4500 };
-    const HALL_SIZES = { AC: 50, NonAC: 28 };
+
+    // Layout mirrors the venue floor plan: a judge stage, single-file strips
+    // along the outer walls (with a gap where the walking exit is marked),
+    // and facing column-pairs with an aisle between each pair.
+    const HALL_LAYOUTS = {
+      AC: {
+        judge: true,
+        leftStrip: [[1, 2, 3, 4], [5, 6, 7, 8, 9]],
+        pairs: [
+          { left: [17, 16, 15, 14, 13, 12, 11, 10], right: [18, 19, 20, 21, 22, 23, 24, 25] },
+          { left: [33, 32, 31, 30, 29, 28, 27, 26], right: [34, 35, 36, 37, 38, 39, 40, 41] }
+        ],
+        rightStrip: [[50, 49, 48, 47], [46, 45, 44, 43, 42]]
+      },
+      NonAC: {
+        judge: false,
+        leftStrip: [],
+        pairs: [
+          { left: [14, 13, 12, 11, 10, 9, 8], right: [15, 16, 17, 18, 19, 20, 21] },
+          { left: [7, 6, 5, 4, 3, 2, 1], right: [22, 23, 24, 25, 26, 27, 28] }
+        ],
+        rightStrip: []
+      }
+    };
+
     const stallGrid = document.querySelector("#stallGrid");
     const stallFeeAmount = document.querySelector("#stallFeeAmount");
     const stallSelectedLabel = document.querySelector("#stallSelectedLabel");
@@ -215,9 +239,56 @@ document.addEventListener("DOMContentLoaded", () => {
       return stallForm.querySelector('input[name="hallType"]:checked').value;
     }
 
+    function makeStallBtn(n, hall) {
+      const btn = document.createElement("button");
+      btn.type = "button";
+      btn.className = "stall-btn";
+      btn.textContent = n;
+      if (bookedNumbers.includes(n)) {
+        btn.disabled = true;
+      } else {
+        btn.addEventListener("click", () => {
+          stallGrid.querySelectorAll(".stall-btn.selected").forEach(b => b.classList.remove("selected"));
+          btn.classList.add("selected");
+          selectedStallInput.value = n;
+          stallSelectedLabel.textContent = "Selected Stall: #" + n + " (" + hall + " Hall)";
+        });
+      }
+      return btn;
+    }
+
+    function buildStrip(groups, hall) {
+      const strip = document.createElement("div");
+      strip.className = "stall-strip";
+      groups.forEach((group, i) => {
+        group.forEach(n => strip.appendChild(makeStallBtn(n, hall)));
+        if (i < groups.length - 1) {
+          const gap = document.createElement("div");
+          gap.className = "stall-strip-gap";
+          gap.textContent = "Exit";
+          strip.appendChild(gap);
+        }
+      });
+      return strip;
+    }
+
+    function buildPair(pair, hall) {
+      const wrap = document.createElement("div");
+      wrap.className = "stall-pair";
+      const leftCol = document.createElement("div");
+      leftCol.className = "stall-col";
+      pair.left.forEach(n => leftCol.appendChild(makeStallBtn(n, hall)));
+      const rightCol = document.createElement("div");
+      rightCol.className = "stall-col";
+      pair.right.forEach(n => rightCol.appendChild(makeStallBtn(n, hall)));
+      wrap.appendChild(leftCol);
+      wrap.appendChild(rightCol);
+      return wrap;
+    }
+
     async function renderStallGrid() {
       const hall = currentHall();
-      const size = HALL_SIZES[hall];
+      const layout = HALL_LAYOUTS[hall];
       stallFeeAmount.textContent = "₹" + HALL_FEES[hall];
       amountPaidInput.value = HALL_FEES[hall];
       amountPaidInput.max = HALL_FEES[hall];
@@ -232,23 +303,20 @@ document.addEventListener("DOMContentLoaded", () => {
       }
 
       stallSelectedLabel.textContent = "No stall selected yet.";
-      for (let n = 1; n <= size; n++) {
-        const btn = document.createElement("button");
-        btn.type = "button";
-        btn.className = "stall-btn";
-        btn.textContent = n;
-        if (bookedNumbers.includes(n)) {
-          btn.disabled = true;
-        } else {
-          btn.addEventListener("click", () => {
-            stallGrid.querySelectorAll(".stall-btn.selected").forEach(b => b.classList.remove("selected"));
-            btn.classList.add("selected");
-            selectedStallInput.value = n;
-            stallSelectedLabel.textContent = "Selected Stall: #" + n + " (" + hall + " Hall)";
-          });
-        }
-        stallGrid.appendChild(btn);
+
+      if (layout.judge) {
+        const judge = document.createElement("div");
+        judge.className = "stall-judge-bar";
+        judge.textContent = "Judge Stage";
+        stallGrid.appendChild(judge);
       }
+
+      const map = document.createElement("div");
+      map.className = "stall-map";
+      if (layout.leftStrip.length) map.appendChild(buildStrip(layout.leftStrip, hall));
+      layout.pairs.forEach(pair => map.appendChild(buildPair(pair, hall)));
+      if (layout.rightStrip.length) map.appendChild(buildStrip(layout.rightStrip, hall));
+      stallGrid.appendChild(map);
     }
 
     stallForm.querySelectorAll('input[name="hallType"]').forEach(r => r.addEventListener("change", renderStallGrid));
