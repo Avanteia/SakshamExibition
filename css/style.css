@@ -363,6 +363,68 @@ section{ padding:70px 0; }
   border-radius:var(--radius-sm); padding:14px; margin-top:16px;
 }
 
+/* ---------- Path choice cards (Stall vs Competition) ---------- */
+.path-card{
+  background:#fff; border:2px solid #ffe3ee; border-radius:var(--radius); padding:32px 24px;
+  text-align:center; cursor:pointer; font-family:inherit; box-shadow:var(--shadow-soft);
+  transition:.2s; display:flex; flex-direction:column; align-items:center; gap:6px;
+}
+.path-card:hover{ border-color:var(--pink-400); transform:translateY(-4px); box-shadow:var(--shadow-strong); }
+.path-card.active{ border-color:var(--pink-500); background:linear-gradient(135deg,var(--pink-100),#fff); }
+.path-card-icon{
+  width:56px; height:56px; border-radius:50%; margin-bottom:10px;
+  display:flex; align-items:center; justify-content:center;
+  background:linear-gradient(135deg,var(--pink-400),var(--pink-600)); color:#fff;
+}
+.path-card-icon svg{ width:28px; height:28px; }
+.path-card h3{ margin:0 0 4px; font-size:1.1rem; }
+.path-card p{ margin:0; color:var(--text-muted); font-size:.88rem; }
+
+/* ---------- Stall picker ---------- */
+.stall-legend{ display:flex; gap:18px; flex-wrap:wrap; margin-bottom:12px; font-size:.82rem; color:var(--text-muted); }
+.stall-legend span{ display:inline-flex; align-items:center; gap:6px; }
+.stall-swatch{ width:14px; height:14px; border-radius:4px; display:inline-block; }
+.stall-swatch.available{ background:#fff; border:1.5px solid var(--pink-400); }
+.stall-swatch.selected{ background:linear-gradient(135deg,var(--pink-400),var(--pink-600)); }
+.stall-swatch.booked{ background:#d8d0d4; }
+
+.stall-grid-wrap{ overflow-x:auto; padding-bottom:6px; }
+.stall-grid{
+  display:grid; grid-template-columns:repeat(10, minmax(42px,1fr)); gap:8px; min-width:460px;
+}
+.stall-btn{
+  aspect-ratio:1; border-radius:10px; border:1.5px solid var(--pink-300); background:var(--bg-cream);
+  color:var(--maroon-900); font-weight:700; font-size:.82rem; cursor:pointer; transition:.15s;
+  display:flex; align-items:center; justify-content:center;
+}
+.stall-btn:hover:not(:disabled){ border-color:var(--pink-500); background:#fff; }
+.stall-btn.selected{
+  background:linear-gradient(135deg,var(--pink-400),var(--pink-600)); color:#fff; border-color:var(--pink-600);
+  box-shadow:0 4px 12px rgba(200,30,105,.35);
+}
+.stall-btn:disabled{
+  background:#e7e1e4; color:#b3a6ac; border-color:#e7e1e4; cursor:not-allowed; text-decoration:line-through;
+}
+
+/* ---------- Competition checkbox list ---------- */
+.comp-check-list{ display:flex; flex-direction:column; gap:2px; }
+.comp-check-day{
+  font-weight:700; color:var(--magenta-700); font-size:.8rem; text-transform:uppercase;
+  letter-spacing:.04em; margin:16px 0 6px; padding-top:10px; border-top:1px dashed #f2c3d8;
+}
+.comp-check-list .comp-check-day:first-child{ margin-top:0; padding-top:0; border-top:none; }
+.comp-check{
+  display:flex; align-items:center; gap:10px; padding:10px 12px; border-radius:var(--radius-sm);
+  cursor:pointer; transition:.15s;
+}
+.comp-check:hover{ background:var(--pink-100); }
+.comp-check input{ width:18px; height:18px; accent-color:var(--pink-600); flex:0 0 auto; }
+.comp-check span{ font-size:.92rem; color:var(--text-dark); }
+
+@media (max-width:560px){
+  .stall-grid{ grid-template-columns:repeat(6, minmax(1px,1fr)); min-width:0; gap:6px; }
+}
+
 /* ---------- Footer ---------- */
 .site-footer{
   background:linear-gradient(160deg,var(--maroon-950),var(--maroon-900));

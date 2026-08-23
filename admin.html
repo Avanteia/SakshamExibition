@@ -42,38 +42,65 @@
     <button id="logoutBtn" class="btn btn-outline btn-sm">Logout</button>
   </div>
 
-  <div class="admin-stats">
-    <div class="admin-stat-card"><strong id="statTotal">0</strong><span>Total Registrations</span></div>
-    <div class="admin-stat-card"><strong id="statParticipants">0</strong><span>Participants</span></div>
-    <div class="admin-stat-card"><strong id="statStalls">0</strong><span>Stall Owners</span></div>
-    <div class="admin-stat-card"><strong id="statAmount">₹0</strong><span>Amount Collected</span></div>
+  <div class="admin-tabs">
+    <button type="button" class="admin-tab active" data-tab="stalls">Stall Bookings</button>
+    <button type="button" class="admin-tab" data-tab="competitions">Competition Registrations</button>
   </div>
 
-  <div class="admin-toolbar">
-    <h2>All Registrations</h2>
-    <div class="actions">
-      <button id="refreshBtn" class="btn btn-outline btn-sm">Refresh</button>
-      <button id="exportBtn" class="btn btn-primary btn-sm">Export to Excel</button>
+  <!-- ===== STALLS TAB ===== -->
+  <div id="tab-stalls" class="admin-tab-panel">
+    <div class="admin-stats">
+      <div class="admin-stat-card"><strong id="stallStatTotal">0</strong><span>Stalls Booked</span></div>
+      <div class="admin-stat-card"><strong id="stallStatAC">0</strong><span>AC Hall</span></div>
+      <div class="admin-stat-card"><strong id="stallStatNonAC">0</strong><span>Non-AC Hall</span></div>
+      <div class="admin-stat-card"><strong id="stallStatCollected">₹0</strong><span>Collected</span></div>
+      <div class="admin-stat-card"><strong id="stallStatRemaining">₹0</strong><span>Remaining</span></div>
+    </div>
+    <div class="admin-toolbar">
+      <h2>Stall Bookings</h2>
+      <div class="actions">
+        <button class="btn btn-outline btn-sm refresh-btn" data-target="stalls">Refresh</button>
+        <button class="btn btn-primary btn-sm" id="exportBtn">Export to Excel</button>
+      </div>
+    </div>
+    <div class="admin-table-wrap">
+      <table class="admin-table">
+        <thead>
+          <tr>
+            <th>Date</th><th>Hall</th><th>Stall #</th><th>Business</th><th>Category</th>
+            <th>Phone</th><th>Email</th><th>Fee</th><th>Paid</th><th>Remaining</th>
+            <th>Payment Ref</th><th>Aadhar</th><th>FSSAI</th><th></th>
+          </tr>
+        </thead>
+        <tbody id="stallTableBody"></tbody>
+      </table>
+      <p id="stallEmptyState" class="admin-empty">No stall bookings yet.</p>
     </div>
   </div>
 
-  <div class="admin-table-wrap">
-    <table class="admin-table">
-      <thead>
-        <tr>
-          <th>Date</th>
-          <th>Name</th>
-          <th>Phone</th>
-          <th>Email</th>
-          <th>Type</th>
-          <th>Competition / Stall</th>
-          <th>Fee</th>
-          <th>Payment Ref</th>
-        </tr>
-      </thead>
-      <tbody id="regTableBody"></tbody>
-    </table>
-    <p id="emptyState" class="admin-empty">No registrations yet.</p>
+  <!-- ===== COMPETITIONS TAB ===== -->
+  <div id="tab-competitions" class="admin-tab-panel" style="display:none;">
+    <div class="admin-stats">
+      <div class="admin-stat-card"><strong id="compStatTotal">0</strong><span>Registrations</span></div>
+      <div class="admin-stat-card"><strong id="compStatEntries">0</strong><span>Competition Entries</span></div>
+      <div class="admin-stat-card"><strong id="compStatCollected">₹0</strong><span>Collected</span></div>
+    </div>
+    <div class="admin-toolbar">
+      <h2>Competition Registrations</h2>
+      <div class="actions">
+        <button class="btn btn-outline btn-sm refresh-btn" data-target="competitions">Refresh</button>
+        <button class="btn btn-primary btn-sm" id="exportBtn2">Export to Excel</button>
+      </div>
+    </div>
+    <div class="admin-table-wrap">
+      <table class="admin-table">
+        <thead>
+          <tr><th>Date</th><th>Name</th><th>Age</th><th>Phone</th><th>Email</th><th>Competitions</th><th>Fee</th><th>Payment Ref</th><th></th></tr>
+        </thead>
+        <tbody id="compTableBody"></tbody>
+      </table>
+      <p id="compEmptyState" class="admin-empty">No competition registrations yet.</p>
+    </div>
   </div>
 </div>
 

@@ -8,14 +8,15 @@
 //
 // This apiKey/config is NOT a secret — it only identifies the
 // Firebase project. Real protection is enforced by Firestore
-// Security Rules (see README notes in admin.html), which must
-// allow public "create" on /registrations but restrict "read" to
-// signed-in admins only.
+// Security Rules, which must allow public "create" on
+// /registrations and /stallBookings but restrict "read"/"delete"
+// to signed-in admins only.
 // ============================================================
 
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
 import {
-  getFirestore, collection, addDoc, getDocs, query, orderBy, serverTimestamp
+  getFirestore, collection, addDoc, getDocs, deleteDoc, doc,
+  query, orderBy, serverTimestamp, runTransaction, where
 } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 import {
   getAuth, signInWithEmailAndPassword, onAuthStateChanged, signOut,
@@ -40,12 +41,47 @@ setPersistence(auth, browserLocalPersistence).catch(() => {});
 // Firebase Auth needs an email-shaped identifier under the hood.
 const ADMIN_EMAIL = "vrunda@saksham-admin.local";
 
-// ---- Public: called from the registration form on contact.html ----
+// ---- Public: competition registration (contact.html) ----
 window.saveRegistrationToFirebase = function (data) {
   return addDoc(collection(db, "registrations"), {
     ...data,
     createdAt: serverTimestamp()
   });
+};
+
+// ---- Public: stall booking (contact.html) ----
+// Split across two collections on purpose:
+//   stallBookings/{hallType-stallNumber} — a PII-free marker doc. Public can
+//     create + read it (that's how the picker checks availability without
+//     ever exposing anyone's phone/business name to a random visitor).
+//   stallDetails/{autoId} — the real booking record (business, phone, fee,
+//     payment ref, Aadhar/FSSAI if applicable). Public can only create it;
+//     only a signed-in admin can read or delete it.
+// Both writes happen in one transaction, so two people can never win the
+// same stall even if they submit at the exact same moment.
+window.bookStallInFirebase = async function (data) {
+  const stallId = `${data.hallType}-${data.stallNumber}`;
+  const markerRef = doc(db, "stallBookings", stallId);
+  const detailRef = doc(collection(db, "stallDetails"));
+  await runTransaction(db, async (tx) => {
+    const existing = await tx.get(markerRef);
+    if (existing.exists()) {
+      throw new Error("STALL_ALREADY_BOOKED");
+    }
+    tx.set(markerRef, { hallType: data.hallType, stallNumber: data.stallNumber, createdAt: serverTimestamp() });
+    tx.set(detailRef, { ...data, createdAt: serverTimestamp() });
+  });
+  return detailRef.id;
+};
+
+// Returns just the booked stall numbers for a hall, so the picker can
+// disable them. Reads only the PII-free marker collection.
+window.fetchBookedStallNumbers = async function (hallType) {
+  const q = query(collection(db, "stallBookings"), where("hallType", "==", hallType));
+  const snap = await getDocs(q);
+  const numbers = [];
+  snap.forEach(docSnap => numbers.push(docSnap.data().stallNumber));
+  return numbers;
 };
 
 // ---- Admin: called from admin.html ----
@@ -68,4 +104,25 @@ window.sakshamFetchRegistrations = async function () {
   const rows = [];
   snap.forEach(docSnap => rows.push({ id: docSnap.id, ...docSnap.data() }));
   return rows;
+};
+
+window.sakshamFetchStallBookings = async function () {
+  const q = query(collection(db, "stallDetails"), orderBy("createdAt", "desc"));
+  const snap = await getDocs(q);
+  const rows = [];
+  snap.forEach(docSnap => rows.push({ id: docSnap.id, ...docSnap.data() }));
+  return rows;
+};
+
+window.sakshamDeleteRegistration = function (id) {
+  return deleteDoc(doc(db, "registrations", id));
+};
+
+// Deletes the detail record AND frees the stall by removing its marker,
+// so the stall becomes bookable again.
+window.sakshamDeleteStallBooking = async function (detailId, hallType, stallNumber) {
+  await deleteDoc(doc(db, "stallDetails", detailId));
+  if (hallType && stallNumber) {
+    await deleteDoc(doc(db, "stallBookings", `${hallType}-${stallNumber}`));
+  }
 };

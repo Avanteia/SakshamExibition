@@ -34,6 +34,23 @@ body{ background:var(--bg-cream); }
 .admin-topbar .brand-text strong{ font-family:Georgia,serif; font-size:1.1rem; color:var(--maroon-900); display:block; }
 .admin-topbar .brand-text span{ font-size:.7rem; color:var(--pink-600); }
 
+/* ---------- Tabs ---------- */
+.admin-tabs{
+  display:flex; gap:8px; max-width:1180px; margin:0 auto; padding:20px 24px 0; flex-wrap:wrap;
+}
+.admin-tab{
+  padding:10px 20px; border-radius:999px; border:1.5px solid #ffe3ee; background:#fff;
+  color:var(--text-muted); font-weight:700; font-size:.88rem; cursor:pointer; transition:.2s;
+}
+.admin-tab.active{
+  background:linear-gradient(135deg,var(--pink-500),var(--magenta-700)); color:#fff; border-color:transparent;
+}
+.admin-table td .btn-delete{
+  background:#fde2e2; color:#a3262c; border:none; border-radius:8px; padding:6px 12px;
+  font-weight:700; font-size:.78rem; cursor:pointer;
+}
+.admin-table td .btn-delete:hover{ background:#f8c6c6; }
+
 /* ---------- Stats ---------- */
 .admin-stats{
   display:grid; grid-template-columns:repeat(4,1fr); gap:16px;

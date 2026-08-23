@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Register / Contact | Saksham</title>
-<meta name="description" content="Register for Saksham or book a stall — contact details and location for the event at Sateri Temple, Mapusa, 13-17 August 2026.">
+<meta name="description" content="Register for Saksham or book a stall — contact details and location for the event at Sateri Temple, Mapusa, 11-14 October 2026.">
 <link rel="icon" href="images/logo.jpg">
 <link rel="stylesheet" href="css/style.css">
 </head>
@@ -36,115 +36,241 @@
   <div class="container">
     <div class="breadcrumb"><a href="index.html">Home</a> / Register / Contact</div>
     <h1>Book Your Seats</h1>
-    <p>Limited seats only — last date of registration 5 August 2026.</p>
+    <p>Limited seats only — last date of registration 4 October 2026.</p>
   </div>
 </section>
 
-<section>
+<!-- ============ PATH CHOICE ============ -->
+<section class="section-tight">
+  <div class="container reveal">
+    <div class="center">
+      <span class="eyebrow">Get Started</span>
+      <h2 class="section-title">What would you like to do?</h2>
+    </div>
+    <div class="grid grid-2" style="margin-top:24px;">
+      <button type="button" class="path-card" id="choosePathStall">
+        <span class="icon path-card-icon" data-icon="package"></span>
+        <h3>Book a Stall</h3>
+        <p>Showcase and sell at the Exhibition cum Sale</p>
+      </button>
+      <button type="button" class="path-card" id="choosePathCompetition">
+        <span class="icon path-card-icon" data-icon="award"></span>
+        <h3>Participate in a Competition</h3>
+        <p>Dandiya, Garba, drawing, dance &amp; more — ₹100 per event</p>
+      </button>
+    </div>
+  </div>
+</section>
+
+<!-- ============ STALL BOOKING FLOW ============ -->
+<section id="stallFlow" style="display:none;">
+  <div class="container reveal">
+    <div class="enquiry-box">
+      <span class="eyebrow">Book a Stall</span>
+      <h2 class="section-title" style="font-size:1.5rem;">Reserve Your Stall</h2>
+      <p style="color:var(--text-muted); margin-bottom:24px;">Choose a hall, pick your stall on the map, fill in your details and pay — your booking is saved instantly.</p>
+
+      <form id="stallForm">
+        <div class="form-row">
+          <label>Choose Hall</label>
+          <div class="reg-toggle">
+            <label class="reg-option">
+              <input type="radio" name="hallType" value="AC" id="hallAC" checked>
+              <span>AC Hall<small>₹5500 / 4 days</small></span>
+            </label>
+            <label class="reg-option">
+              <input type="radio" name="hallType" value="NonAC" id="hallNonAC">
+              <span>Non-AC Hall<small>₹4500 / 4 days</small></span>
+            </label>
+          </div>
+        </div>
+
+        <div class="form-row">
+          <label>Select Your Stall</label>
+          <div class="stall-legend">
+            <span><i class="stall-swatch available"></i> Available</span>
+            <span><i class="stall-swatch selected"></i> Selected</span>
+            <span><i class="stall-swatch booked"></i> Booked</span>
+          </div>
+          <p id="stallSelectedLabel" class="qr-hint" style="text-align:left; margin-top:0;">No stall selected yet.</p>
+          <div class="stall-grid-wrap">
+            <div id="stallGrid" class="stall-grid"></div>
+          </div>
+          <input type="hidden" id="selectedStallNumber" required>
+        </div>
+
+        <div class="form-row">
+          <label for="stallBusinessName">Business Name</label>
+          <input type="text" id="stallBusinessName" placeholder="e.g. Priya's Boutique" required>
+        </div>
+
+        <div class="form-row">
+          <label for="stallCategory">Type of Stall</label>
+          <select id="stallCategory" required>
+            <option value="">Select a category</option>
+            <option>Fashion / Clothing</option>
+            <option>Lifestyle Accessories</option>
+            <option>Home Decor</option>
+            <option>Food &amp; Packed Items</option>
+            <option>Beauty &amp; Cosmetics</option>
+            <option>Resin Art</option>
+            <option>Instant Nauvari Stitching</option>
+            <option>Jewellery</option>
+            <option>Footware</option>
+            <option>Handicraft</option>
+            <option>Other</option>
+          </select>
+        </div>
+        <div class="form-row" id="stallCategoryOtherField" style="display:none;">
+          <label for="stallCategoryOther">Please specify your business type</label>
+          <input type="text" id="stallCategoryOther" placeholder="e.g. Handmade candles">
+        </div>
+
+        <div id="stallFoodNote" class="form-status" style="display:none; margin-top:0; margin-bottom:18px;">
+          Food stall owners: please bring your original Aadhar card and FSSAI license with you on the day of the event.
+        </div>
+        <div class="form-row" id="stallAadharField" style="display:none;">
+          <label for="stallAadhar">Aadhar Number</label>
+          <input type="text" id="stallAadhar" placeholder="12-digit Aadhar number" pattern="[0-9]{12}" maxlength="12">
+        </div>
+        <div class="form-row" id="stallFssaiField" style="display:none;">
+          <label for="stallFssai">FSSAI License Number</label>
+          <input type="text" id="stallFssai" placeholder="14-digit FSSAI license number" pattern="[0-9]{14}" maxlength="14">
+        </div>
+
+        <div class="form-row">
+          <label for="stallPhone">Phone Number</label>
+          <input type="tel" id="stallPhone" placeholder="e.g. 9876543210" pattern="[0-9]{10}" maxlength="10" required>
+        </div>
+        <div class="form-row">
+          <label for="stallEmail">Email ID (optional)</label>
+          <input type="email" id="stallEmail" placeholder="e.g. priya@email.com">
+        </div>
+
+        <div class="fee-note">
+          <span>Total Stall Fee</span>
+          <strong id="stallFeeAmount">₹5500</strong>
+        </div>
+
+        <div class="form-row">
+          <label>Scan to Pay</label>
+          <div class="qr-box">
+            <img src="images/payment-scanner.jpeg" alt="Payment QR code">
+          </div>
+          <p class="qr-hint">Scan the code above to pay, then submit this form.</p>
+          <p class="qr-hint">If your UPI app rejects the full amount as a single scan, tap the number below to copy it and pay directly from your own UPI app instead (you can split it into more than one payment).</p>
+          <button type="button" class="btn btn-primary btn-sm qr-upi-btn" data-copy="7083674144">
+            <span class="icon" data-icon="copy"></span> <span class="copy-text">7083674144</span>
+          </button>
+        </div>
+
+        <div class="form-row">
+          <label for="stallAmountPaid">Amount Paid Now (₹)</label>
+          <input type="number" id="stallAmountPaid" min="1" required>
+          <p class="qr-hint" style="text-align:left; margin-top:6px;">Paying only an advance? Enter the amount you're paying now — the rest can be settled later.</p>
+        </div>
+
+        <div class="form-row">
+          <label for="stallUtr">Payment Reference / UTR Number</label>
+          <input type="text" id="stallUtr" placeholder="e.g. UPI transaction ID" required>
+        </div>
+
+        <button type="submit" class="btn btn-primary btn-block">Book This Stall</button>
+        <p id="stallStatus" class="form-status" style="display:none;"></p>
+      </form>
+    </div>
+  </div>
+</section>
+
+<!-- ============ COMPETITION REGISTRATION FLOW ============ -->
+<section id="competitionFlow" style="display:none;">
+  <div class="container reveal">
+    <div class="enquiry-box">
+      <span class="eyebrow">Participate in a Competition</span>
+      <h2 class="section-title" style="font-size:1.5rem;">Register for Competitions</h2>
+      <p style="color:var(--text-muted); margin-bottom:24px;">₹100 per competition — pick as many as you like, pay the total, and submit.</p>
+
+      <form id="competitionForm">
+        <div class="form-row">
+          <label for="compName">Full Name</label>
+          <input type="text" id="compName" placeholder="e.g. Priya Naik" required>
+        </div>
+        <div class="form-row">
+          <label for="compAge">Age</label>
+          <input type="number" id="compAge" min="1" max="100" placeholder="e.g. 8" required>
+        </div>
+        <div class="form-row">
+          <label for="compPhone">Phone Number</label>
+          <input type="tel" id="compPhone" placeholder="e.g. 9876543210" pattern="[0-9]{10}" maxlength="10" required>
+        </div>
+        <div class="form-row">
+          <label for="compEmail">Email ID (optional)</label>
+          <input type="email" id="compEmail" placeholder="e.g. priya@email.com">
+        </div>
+
+        <div class="form-row">
+          <label>Select Competitions</label>
+          <div class="comp-check-list">
+            <div class="comp-check-day">Day 1 · 11 October — Theme: Devotional</div>
+            <label class="comp-check"><input type="checkbox" value="Dandiya Competition"><span>Dandiya Competition</span></label>
+            <label class="comp-check"><input type="checkbox" value="Malki Diya"><span>Malki Diya</span></label>
+            <label class="comp-check"><input type="checkbox" value="Thali Decoration"><span>Thali Decoration</span></label>
+            <label class="comp-check"><input type="checkbox" value="Fancy Dress Competition"><span>Fancy Dress Competition (3-5, 6-9, 10-16 yrs)</span></label>
+
+            <div class="comp-check-day">Day 2 · 12 October</div>
+            <label class="comp-check"><input type="checkbox" value="Vatra"><span>Vatra</span></label>
+            <label class="comp-check"><input type="checkbox" value="Haar Making"><span>Haar Making</span></label>
+            <label class="comp-check"><input type="checkbox" value="Akash Kandil Making"><span>Akash Kandil Making</span></label>
+            <label class="comp-check"><input type="checkbox" value="Balgeet Competition"><span>Balgeet Competition (3-6, 7-10 yrs)</span></label>
+            <label class="comp-check"><input type="checkbox" value="Story Telling Competition"><span>Story Telling Competition (3-6, 7-10 yrs)</span></label>
+
+            <div class="comp-check-day">Day 3 · 13 October</div>
+            <label class="comp-check"><input type="checkbox" value="Saree Draping Workshop"><span>Saree Draping Workshop</span></label>
+            <label class="comp-check"><input type="checkbox" value="Drawing Competition"><span>Drawing Competition (3-6, 7-10, 11-16 yrs)</span></label>
+            <label class="comp-check"><input type="checkbox" value="Solo Dance Competition"><span>Solo Dance Competition</span></label>
+
+            <div class="comp-check-day">Day 4 · 14 October</div>
+            <label class="comp-check"><input type="checkbox" value="Little Garba Dance"><span>Little Garba Dance (10-17, 18-25, 25+ yrs · team of 4-6)</span></label>
+          </div>
+        </div>
+
+        <div class="fee-note">
+          <span id="compFeeCountLabel">0 competitions selected</span>
+          <strong id="compFeeAmount">₹0</strong>
+        </div>
+
+        <div class="form-row">
+          <label>Scan to Pay</label>
+          <div class="qr-box">
+            <img src="images/payment-scanner.jpeg" alt="Payment QR code">
+          </div>
+          <p class="qr-hint">Scan the code above to pay the total shown, then submit this form.</p>
+          <p class="qr-hint">Or tap the number below to copy it and pay from your own UPI app.</p>
+          <button type="button" class="btn btn-primary btn-sm qr-upi-btn" data-copy="7083674144">
+            <span class="icon" data-icon="copy"></span> <span class="copy-text">7083674144</span>
+          </button>
+        </div>
+
+        <div class="form-row">
+          <label for="compUtr">Payment Reference / UTR Number</label>
+          <input type="text" id="compUtr" placeholder="e.g. UPI transaction ID" required>
+        </div>
+
+        <button type="submit" class="btn btn-primary btn-block">Register for Competitions</button>
+        <p id="compStatus" class="form-status" style="display:none;"></p>
+      </form>
+    </div>
+  </div>
+</section>
+
+<!-- ============ CONTACT INFO ============ -->
+<section style="background:#fff;">
   <div class="container reveal">
     <div class="grid grid-2" style="align-items:flex-start;">
-
-      <div class="enquiry-box">
-        <span class="eyebrow">Official Registration</span>
-        <h2 class="section-title" style="font-size:1.5rem;">Register for Saksham</h2>
-        <p style="color:var(--text-muted); margin-bottom:24px;">Fill in your details, choose how you'd like to join, complete payment, and submit — your registration is saved to our event records.</p>
-        <form id="registrationForm">
-          <div class="form-row">
-            <label for="regName">Full Name</label>
-            <input type="text" id="regName" placeholder="e.g. Priya Naik" required>
-          </div>
-          <div class="form-row">
-            <label for="regPhone">Phone Number</label>
-            <input type="tel" id="regPhone" placeholder="e.g. 9876543210" pattern="[0-9]{10}" maxlength="10" required>
-          </div>
-          <div class="form-row">
-            <label for="regEmail">Email ID</label>
-            <input type="email" id="regEmail" placeholder="e.g. priya@email.com" required>
-          </div>
-
-          <div class="form-row">
-            <label>Registering As</label>
-            <div class="reg-toggle">
-              <label class="reg-option">
-                <input type="radio" name="regType" value="Participant" checked>
-                <span>Participant<small>₹100 registration</small></span>
-              </label>
-              <label class="reg-option">
-                <input type="radio" name="regType" value="Stall">
-                <span>Stall Owner<small>₹3500 / 5 days</small></span>
-              </label>
-            </div>
-          </div>
-
-          <div class="form-row" id="participantField">
-            <label for="regCompetition">Select Competition</label>
-            <select id="regCompetition">
-              <option>Cook Without Fire (Day 1)</option>
-              <option>Fancy Dress Competition (Day 1)</option>
-              <option>Fati Making - Fresh Flowers (Day 2)</option>
-              <option>Solo Dance Competition - Classical (Day 2)</option>
-              <option>Healthy Food - Cook at Home (Day 3)</option>
-              <option>Hairstyle Making (Day 3)</option>
-              <option>Story Telling Competition (Day 3)</option>
-              <option>Book Mark Competition (Day 3)</option>
-              <option>Mehendi Competition (Day 4)</option>
-              <option>Balgeet Competition (Day 4)</option>
-              <option>Rakhi Making Competition (Day 4)</option>
-              <option>Fashion Show for Ladies (Day 5)</option>
-            </select>
-          </div>
-
-          <div class="form-row" id="stallField" style="display:none;">
-            <label for="regStallType">Type of Stall</label>
-            <select id="regStallType">
-              <option>Fashion / Clothing</option>
-              <option>Lifestyle Accessories</option>
-              <option>Home Decor</option>
-              <option>Food &amp; Packed Items</option>
-              <option>Beauty &amp; Cosmetics</option>
-              <option>Resin Art</option>
-              <option>Instant Nauvari Stitching</option>
-              <option>Jewellery</option>
-              <option>Footware</option>
-              <option>Other</option>
-            </select>
-          </div>
-          <div class="form-row" id="stallOtherField" style="display:none;">
-            <label for="regStallOther">Please specify your stall type</label>
-            <input type="text" id="regStallOther" placeholder="e.g. Handmade candles">
-          </div>
-
-          <div class="fee-note">
-            <span>Amount Payable</span>
-            <strong id="feeAmount">₹100</strong>
-          </div>
-
-          <div class="form-row">
-            <label>Scan to Pay</label>
-            <div class="qr-box">
-              <img src="images/payment-scanner.jpeg" alt="Payment QR code">
-            </div>
-            <p class="qr-hint">Scan the code above to pay the amount shown, then submit this form.</p>
-            <p class="qr-hint">Stall fee (₹3500) may be rejected by some UPI apps as a single scan — if so, tap the number below to copy it, then pay to it directly from your own UPI app.</p>
-            <button type="button" class="btn btn-primary btn-sm qr-upi-btn" data-copy="7083674144">
-              <span class="icon" data-icon="copy"></span> <span class="copy-text">7083674144</span>
-            </button>
-          </div>
-
-          <div class="form-row">
-            <label for="regPaymentRef">Payment Reference / UTR (optional)</label>
-            <input type="text" id="regPaymentRef" placeholder="e.g. UPI transaction ID">
-          </div>
-
-          <button type="submit" class="btn btn-primary btn-block">Submit Registration</button>
-          <p id="regStatus" class="form-status" style="display:none;"></p>
-        </form>
-      </div>
-
       <div>
         <span class="eyebrow">Get in Touch</span>
         <h2 class="section-title" style="font-size:1.5rem;">Contact Numbers</h2>
-        <div class="grid" style="gap:16px; margin-bottom:30px;">
+        <div class="grid" style="gap:16px;">
           <div class="contact-card">
             <div class="phone"><span class="icon" data-icon="phone"></span> 7083677595</div>
             <div class="actions">
@@ -167,23 +293,24 @@
             </div>
           </div>
         </div>
-
-        <span class="eyebrow">Venue</span>
-        <h2 class="section-title" style="font-size:1.5rem;">Sateri Temple, Mapusa</h2>
-        <p style="color:var(--text-muted); margin-bottom:16px;">13 – 17 August 2026 · 10:00 AM – 8:00 PM</p>
-        <a href="https://www.google.com/maps/search/?api=1&query=Sateri+Temple+Mapusa" target="_blank" rel="noopener" class="btn btn-primary"><span class="icon" data-icon="pin"></span> Open in Google Maps</a>
       </div>
 
+      <div>
+        <span class="eyebrow">Venue</span>
+        <h2 class="section-title" style="font-size:1.5rem;">Sateri Temple, Mapusa</h2>
+        <p style="color:var(--text-muted); margin-bottom:16px;">11 – 14 October 2026 · 10:00 AM – 8:00 PM</p>
+        <a href="https://www.google.com/maps/search/?api=1&query=Sateri+Temple+Mapusa" target="_blank" rel="noopener" class="btn btn-primary"><span class="icon" data-icon="pin"></span> Open in Google Maps</a>
+      </div>
     </div>
   </div>
 </section>
 
-<section style="background:#fff;">
+<section>
   <div class="container center reveal">
     <span class="eyebrow">Limited Seats Only</span>
-    <h2 class="section-title">Last Date of Registration: 5 August 2026</h2>
+    <h2 class="section-title">Last Date of Registration: 4 October 2026</h2>
     <p class="section-sub">Seats and stalls are filling fast — reach out today to confirm your spot.</p>
-    <a class="btn btn-whatsapp" data-wa-msg="Hello, I am interested in registering for the Saksham event. Please share more details."><span class="icon" data-icon="whatsapp"></span> Register Now on WhatsApp</a>
+    <a class="btn btn-whatsapp" data-wa-msg="Hello, I am interested in registering for the Saksham event. Please share more details."><span class="icon" data-icon="whatsapp"></span> Ask a Question on WhatsApp</a>
   </div>
 </section>
 
@@ -195,7 +322,7 @@
           <img src="images/logo.jpg" alt="Saksham logo">
           <strong>सक्षम</strong>
         </div>
-        <p>Empowering Women, Enriching Lives. 5 days of talent, confidence and community at Sateri Temple, Mapusa.</p>
+        <p>Empowering Women, Enriching Lives. 4 days of talent, confidence and community at Sateri Temple, Mapusa.</p>
       </div>
       <div>
         <h4>Quick Links</h4>
