@@ -346,6 +346,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
       const hallType = currentHall();
       const fee = HALL_FEES[hallType];
+      const ownerName = document.querySelector("#stallOwnerName").value.trim();
       const businessName = document.querySelector("#stallBusinessName").value.trim();
       const category = categorySelect.value === "Other"
         ? document.querySelector("#stallCategoryOther").value.trim()
@@ -363,7 +364,7 @@ document.addEventListener("DOMContentLoaded", () => {
       submitBtn.textContent = "Booking...";
 
       const payload = {
-        hallType, stallNumber, businessName, category, aadhar, fssai,
+        hallType, stallNumber, ownerName, businessName, category, aadhar, fssai,
         phone, email, fee, amountPaid, remaining, paymentRef
       };
 
@@ -388,7 +389,7 @@ document.addEventListener("DOMContentLoaded", () => {
           stallForm.appendChild(waBtn);
           renderIcons();
         }
-        const msg = `Hello, I have booked stall #${stallNumber} in the ${hallType} Hall for Saksham. Business: ${businessName} (${category}), Phone: ${phone}, Fee: Rs ${fee}, Paid: Rs ${amountPaid}${remaining ? ", Remaining: Rs " + remaining : ""}, Payment Ref: ${paymentRef}.`;
+        const msg = `Hello, I have booked stall #${stallNumber} in the ${hallType} Hall for Saksham. Owner: ${ownerName}, Business: ${businessName} (${category}), Phone: ${phone}, Fee: Rs ${fee}, Paid: Rs ${amountPaid}${remaining ? ", Remaining: Rs " + remaining : ""}, Payment Ref: ${paymentRef}.`;
         waBtn.setAttribute("href", waLink(msg));
       } catch (err) {
         if (err && err.message === "STALL_ALREADY_BOOKED") {
@@ -409,7 +410,7 @@ document.addEventListener("DOMContentLoaded", () => {
             stallForm.appendChild(waBtn);
             renderIcons();
           }
-          const msg = `Hello, I want to book stall #${stallNumber} in the ${hallType} Hall for Saksham. Business: ${businessName} (${category}), Phone: ${phone}, Fee: Rs ${fee}, Paid: Rs ${amountPaid}, Payment Ref: ${paymentRef}.`;
+          const msg = `Hello, I want to book stall #${stallNumber} in the ${hallType} Hall for Saksham. Owner: ${ownerName}, Business: ${businessName} (${category}), Phone: ${phone}, Fee: Rs ${fee}, Paid: Rs ${amountPaid}, Payment Ref: ${paymentRef}.`;
           waBtn.setAttribute("href", waLink(msg));
         }
       }

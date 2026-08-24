@@ -58,14 +58,14 @@ document.addEventListener("DOMContentLoaded", () => {
   /* ---------- Stalls ---------- */
   async function loadStalls() {
     const tbody = document.querySelector("#stallTableBody");
-    tbody.innerHTML = '<tr><td colspan="14" style="text-align:center;">Loading...</td></tr>';
+    tbody.innerHTML = '<tr><td colspan="15" style="text-align:center;">Loading...</td></tr>';
     document.querySelector("#stallEmptyState").style.display = "none";
     try {
       stallRows = await window.sakshamFetchStallBookings();
       renderStallStats(stallRows);
       renderStallTable(stallRows);
     } catch (err) {
-      tbody.innerHTML = '<tr><td colspan="14" style="text-align:center;">Could not load data. Check your connection or Firestore rules.</td></tr>';
+      tbody.innerHTML = '<tr><td colspan="15" style="text-align:center;">Could not load data. Check your connection or Firestore rules.</td></tr>';
     }
   }
 
@@ -95,6 +95,7 @@ document.addEventListener("DOMContentLoaded", () => {
         <td data-label="Date">${escapeHtml(fmtDate(r.createdAt))}</td>
         <td data-label="Hall">${escapeHtml(r.hallType)}</td>
         <td data-label="Stall #">${escapeHtml(r.stallNumber)}</td>
+        <td data-label="Owner">${escapeHtml(r.ownerName || "-")}</td>
         <td data-label="Business">${escapeHtml(r.businessName)}</td>
         <td data-label="Category">${escapeHtml(r.category)}</td>
         <td data-label="Phone">${escapeHtml(r.phone)}</td>
@@ -189,6 +190,7 @@ document.addEventListener("DOMContentLoaded", () => {
       Date: fmtDate(r.createdAt),
       Hall: r.hallType,
       "Stall #": r.stallNumber,
+      Owner: r.ownerName || "",
       Business: r.businessName || "",
       Category: r.category || "",
       Phone: r.phone || "",
