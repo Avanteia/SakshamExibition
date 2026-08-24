@@ -210,14 +210,17 @@ document.addEventListener("DOMContentLoaded", () => {
         ],
         rightStrip: [[50, 49, 48, 47], [46, 45, 44, 43, 42]]
       },
+      // Four parallel columns, each split into an upper block and a lower
+      // block by the Exit corridor, plus stall 1 standing alone by the
+      // stairs entrance — matches the Non-AC floor plan exactly.
       NonAC: {
         judge: false,
-        leftStrip: [],
-        pairs: [
-          { left: [14, 13, 12, 11, 10, 9, 8], right: [15, 16, 17, 18, 19, 20, 21] },
-          { left: [7, 6, 5, 4, 3, 2, 1], right: [22, 23, 24, 25, 26, 27, 28] }
-        ],
-        rightStrip: []
+        columns: [
+          { groups: [[22, 23, 24, 25], [26, 27, 28]] },
+          { groups: [[21, 20, 19, 18], [17, 16, 15]] },
+          { groups: [[8, 9, 10, 11], [12, 13, 14]] },
+          { groups: [[7, 6, 5, 4], [3, 2]], entrance: 1 }
+        ]
       }
     };
 
@@ -272,6 +275,18 @@ document.addEventListener("DOMContentLoaded", () => {
       return strip;
     }
 
+    function buildColumn(col, hall) {
+      const strip = buildStrip(col.groups, hall);
+      if (col.entrance) {
+        const gap = document.createElement("div");
+        gap.className = "stall-strip-gap";
+        gap.textContent = "Entrance";
+        strip.appendChild(gap);
+        strip.appendChild(makeStallBtn(col.entrance, hall));
+      }
+      return strip;
+    }
+
     function buildPair(pair, hall) {
       const wrap = document.createElement("div");
       wrap.className = "stall-pair";
@@ -313,9 +328,13 @@ document.addEventListener("DOMContentLoaded", () => {
 
       const map = document.createElement("div");
       map.className = "stall-map";
-      if (layout.leftStrip.length) map.appendChild(buildStrip(layout.leftStrip, hall));
-      layout.pairs.forEach(pair => map.appendChild(buildPair(pair, hall)));
-      if (layout.rightStrip.length) map.appendChild(buildStrip(layout.rightStrip, hall));
+      if (layout.columns) {
+        layout.columns.forEach(col => map.appendChild(buildColumn(col, hall)));
+      } else {
+        if (layout.leftStrip.length) map.appendChild(buildStrip(layout.leftStrip, hall));
+        layout.pairs.forEach(pair => map.appendChild(buildPair(pair, hall)));
+        if (layout.rightStrip.length) map.appendChild(buildStrip(layout.rightStrip, hall));
+      }
       stallGrid.appendChild(map);
     }
 
