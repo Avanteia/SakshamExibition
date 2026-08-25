@@ -24,12 +24,12 @@ import {
 } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
 
 const firebaseConfig = {
-  apiKey: "AIzaSyBdrUGVUM7li_3wEujiKg1juUCR28m1DJo",
-  authDomain: "saksham-97c47.firebaseapp.com",
-  projectId: "saksham-97c47",
-  storageBucket: "saksham-97c47.firebasestorage.app",
-  messagingSenderId: "288293889711",
-  appId: "1:288293889711:web:3263bef705a4830472165a"
+  apiKey: "AIzaSyAuJXAQiGoHayNiWiUR9NvgXuSI34Rf7sM",
+  authDomain: "saksham-ccdb5.firebaseapp.com",
+  projectId: "saksham-ccdb5",
+  storageBucket: "saksham-ccdb5.firebasestorage.app",
+  messagingSenderId: "1035993204670",
+  appId: "1:1035993204670:web:ab8e473eefd8a50b685bef"
 };
 
 const app = initializeApp(firebaseConfig);
