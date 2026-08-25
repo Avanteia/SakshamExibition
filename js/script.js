@@ -260,7 +260,7 @@ document.addEventListener("DOMContentLoaded", () => {
       return btn;
     }
 
-    function buildStrip(groups, hall) {
+    function buildStrip(groups, hall, gapLabel) {
       const strip = document.createElement("div");
       strip.className = "stall-strip";
       groups.forEach((group, i) => {
@@ -268,7 +268,7 @@ document.addEventListener("DOMContentLoaded", () => {
         if (i < groups.length - 1) {
           const gap = document.createElement("div");
           gap.className = "stall-strip-gap";
-          gap.textContent = "Exit";
+          gap.textContent = gapLabel || "Exit";
           strip.appendChild(gap);
         }
       });
@@ -331,9 +331,9 @@ document.addEventListener("DOMContentLoaded", () => {
       if (layout.columns) {
         layout.columns.forEach(col => map.appendChild(buildColumn(col, hall)));
       } else {
-        if (layout.leftStrip.length) map.appendChild(buildStrip(layout.leftStrip, hall));
+        if (layout.leftStrip.length) map.appendChild(buildStrip(layout.leftStrip, hall, "Entry"));
         layout.pairs.forEach(pair => map.appendChild(buildPair(pair, hall)));
-        if (layout.rightStrip.length) map.appendChild(buildStrip(layout.rightStrip, hall));
+        if (layout.rightStrip.length) map.appendChild(buildStrip(layout.rightStrip, hall, "Exit"));
       }
       stallGrid.appendChild(map);
     }
@@ -416,7 +416,9 @@ document.addEventListener("DOMContentLoaded", () => {
           statusEl.style.display = "block";
           renderStallGrid();
         } else {
-          statusEl.textContent = "We couldn't save your booking automatically — please contact us on WhatsApp to confirm your stall.";
+          console.error("bookStallInFirebase failed:", err);
+          const code = err && (err.code || err.message) ? ` (${err.code || err.message})` : "";
+          statusEl.textContent = "We couldn't save your booking automatically" + code + " — please contact us on WhatsApp to confirm your stall.";
           statusEl.style.display = "block";
           let waBtn = stallForm.querySelector(".reg-wa-confirm");
           if (!waBtn) {
@@ -475,6 +477,7 @@ document.addEventListener("DOMContentLoaded", () => {
       submitBtn.textContent = "Submitting...";
 
       let saved = false;
+      let errCode = "";
       try {
         if (window.saveRegistrationToFirebase) {
           await window.saveRegistrationToFirebase({
@@ -483,6 +486,8 @@ document.addEventListener("DOMContentLoaded", () => {
           saved = true;
         }
       } catch (err) {
+        console.error("saveRegistrationToFirebase failed:", err);
+        errCode = err && (err.code || err.message) ? ` (${err.code || err.message})` : "";
         saved = false;
       }
 
@@ -491,7 +496,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
       statusEl.textContent = saved
         ? "Thank you! Your registration has been recorded. You can confirm via WhatsApp below."
-        : "We couldn't save your registration automatically, but you can still confirm via WhatsApp below.";
+        : "We couldn't save your registration automatically" + errCode + ", but you can still confirm via WhatsApp below.";
       statusEl.style.display = "block";
 
       let waBtn = competitionForm.querySelector(".reg-wa-confirm");
